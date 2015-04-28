@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8"/>
+<script src="jquery-1.11.1.min.js"></script>
+<script src="Diagram.js"></script>
+<script src="main.js"></script>
+<script>
+var diagram = new Diagram('diagram');
+</script>
+<link rel="stylesheet" href="main.css"/>
+</head>
+<body>
+<h1>Diagram editor</h1>
+<button onclick="diagram.add()">Add</button> 
+<div width="100%" height="100%" style="overflow:scroll">
+    <svg xmlns="http://www.w3.org/2000/svg" id="diagram" width="600" height="600">
+    </svg>
+</div>
+</body>
+</html>
