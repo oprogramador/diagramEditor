@@ -1,12 +1,14 @@
 function Diagram(elementId, templateId) {
     this.add = add;
-    this.select = select;
+    this.setMood = setMood;
 
+    var lastId = 0;
     var currentGroup = null;
     var lastGroup = null;
-    var lastId = 0;
     var lastX = null;
     var lastY = null;
+    var mood = 'replace';
+    var joinings = new Set();
 
     $(document.body).on('click', '[id^=svg-g-]', function(e) {
         var id = this.id.split('-')[2];
@@ -48,31 +50,38 @@ function Diagram(elementId, templateId) {
 
     function choose(id) {
         console.log($('#svg-g-'+id).html());
-        currentGroup = id;
+        if(mood === 'select') {
+            currentGroup = id;
+        } else if(mood === 'join') {
+            if(lastGroup === null) lastGroup = id;
+            else join(lastGroup, id);
+        }
     }
 
     function mousedown(id, x, y) {
-        lastGroup = id;
-        lastX = x;
-        lastY = y;
-        console.log('id='+id+' x='+x+' y='+y);
+        if(mood === 'replace') {
+            lastGroup = id;
+            lastX = x;
+            lastY = y;
+        }
     }
 
     function mouseup(x, y) {
-        console.log('up x='+x+' y='+y);
-        if(lastX !== null) moveGroup(lastGroup, x-lastX, y-lastY);
-        lastGroup = null;
-        lastX = null;
-        lastY = null;
+        if(mood === 'replace') {
+            if(lastX !== null) moveGroup(lastGroup, x-lastX, y-lastY);
+            lastGroup = null;
+            lastX = null;
+            lastY = null;
+        }
     }
 
     function mousemove(x, y) {
-        //console.log('move x='+x+' y='+y);
-        //console.log('lastX='+lastX);
-        if(lastX !== null) {
-            moveGroup(lastGroup, x-lastX, y-lastY);
-            lastX = x;
-            lastY = y;
+        if(mood === 'replace') {
+            if(lastX !== null) {
+                moveGroup(lastGroup, x-lastX, y-lastY);
+                lastX = x;
+                lastY = y;
+            }
         }
     }
 
@@ -83,6 +92,26 @@ function Diagram(elementId, templateId) {
             children[i].setAttribute('x', parseInt(children[i].getAttribute('x'))+dx);
             children[i].setAttribute('y', parseInt(children[i].getAttribute('y'))+dy);
         }
+    }
+
+    function join(a, b) {
+        if(a !== b) joinings.add(toPair(a, b));
+        joinings.forEach(function(i){
+            console.log(i);
+        });
+        lastGroup = null;
+    }
+
+    function setMood(m) {
+        mood = m;
+        currentGroup = null;
+        lastGroup = null;
+        lastX = null;
+        lastY = null;
+    }
+
+    function toPair(a, b) {
+        return a<=b ? a+','+b : b+','+a;
     }
 
     function refresh() {

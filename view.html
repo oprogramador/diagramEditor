@@ -15,9 +15,9 @@ $(document).ready(function(){
 <body>
 <h1>Diagram editor</h1>
 <button onclick="diagram.add()">Add</button> 
-<button onclick="diagram.replace()">Replace</button> 
-<button onclick="diagram.join()">Join</button> 
-<button onclick="diagram.select()">Select</button> 
+<button onclick="diagram.setMood('replace')">Replace</button> 
+<button onclick="diagram.setMood('join')">Join</button> 
+<button onclick="diagram.setMood('select')">Select</button> 
 <div width="100%" height="100%" style="overflow:scroll">
     <svg id="diagram" width="600" height="600">
     </svg>
