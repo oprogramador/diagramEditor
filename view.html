@@ -1,7 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
 <meta charset="utf-8"/>
 <script src="jquery-1.11.1.min.js"></script>
@@ -10,17 +7,26 @@
 <script>
 var diagram;
 $(document).ready(function(){
-    diagram = new Diagram('diagram');
-    });
+        diagram = new Diagram('diagram', 'template');
+        });
 </script>
 <link rel="stylesheet" href="main.css"/>
 </head>
 <body>
 <h1>Diagram editor</h1>
 <button onclick="diagram.add()">Add</button> 
+<button onclick="diagram.replace()">Replace</button> 
+<button onclick="diagram.join()">Join</button> 
+<button onclick="diagram.select()">Select</button> 
 <div width="100%" height="100%" style="overflow:scroll">
-    <svg xmlns="http://www.w3.org/2000/svg" id="diagram" width="600" height="600">
+    <svg id="diagram" width="600" height="600">
     </svg>
+</div>
+<div style="display:none">
+    <g id="template">
+    <rect width="300" height="100" style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)"></rect>
+    <text x="150" y="50" fill="white" text-anchor="middle" alignment-baseline="middle">Hello</text>
+    </g>
 </div>
 </body>
 </html>
