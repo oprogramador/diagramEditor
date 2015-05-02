@@ -7,7 +7,7 @@
 <script>
 var diagram;
 $(document).ready(function(){
-        diagram = new Diagram('diagram', 'template', 'templateLine');
+        diagram = new Diagram('diagram', 'template', 'templateLine', 'form');
         });
 </script>
 <link rel="stylesheet" href="main.css"/>
@@ -18,6 +18,10 @@ $(document).ready(function(){
 <button onclick="diagram.setMood('replace')">Replace</button> 
 <button onclick="diagram.setMood('join')">Join</button> 
 <button onclick="diagram.setMood('select')">Select</button> 
+<div id="form">
+    <label for="input-text">Text</label>
+    <input id="input-text"/ name="text" value="Hello">
+</div>
 <div width="100%" height="100%" style="overflow:scroll">
     <svg id="diagram" width="800" height="600">
     </svg>

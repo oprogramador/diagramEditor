@@ -1,4 +1,4 @@
-function Diagram(elementId, templateId, templateLineId) {
+function Diagram(elementId, templateId, templateLineId, formId) {
     this.add = add;
     this.setMood = setMood;
 
@@ -30,6 +30,11 @@ function Diagram(elementId, templateId, templateLineId) {
 
     $(document.body).on('dragstart', '[id^=svg-g-]', function(e) {
         return false;
+    });
+
+    $(document.body).on('keydown', '#'+formId+' [name=text]', function(e) {
+        console.log('currentGroup='+currentGroup);
+        if(currentGroup !== null) $('#svg-g-'+currentGroup+' text').html(this.value);
     });
 
     function add() {
