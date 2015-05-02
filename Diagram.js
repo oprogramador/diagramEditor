@@ -1,4 +1,4 @@
-function Diagram(elementId, templateId) {
+function Diagram(elementId, templateId, templateLineId) {
     this.add = add;
     this.setMood = setMood;
 
@@ -8,11 +8,10 @@ function Diagram(elementId, templateId) {
     var lastX = null;
     var lastY = null;
     var mood = 'replace';
-    var joinings = new Set();
+    var joinings = {};
 
     $(document.body).on('click', '[id^=svg-g-]', function(e) {
         var id = this.id.split('-')[2];
-        console.log('click '+id);
         choose(id);
     });
 
@@ -44,12 +43,30 @@ function Diagram(elementId, templateId) {
         refresh();
     }
 
+    function addLine(a, b) {
+        var line = $('#'+templateLineId).clone();
+        line.attr('id', getLineId(a, b));
+        $('#'+elementId).append(line);
+        updateLine(a, b);
+        refresh();
+    }
+
+    function updateLine(a, b) {
+        console.log('lineId='+getLineId(a, b));
+        var line = $('#'+getLineId(a, b))[0];
+        a = $('#svg-g-'+a)[0];
+        b = $('#svg-g-'+b)[0];
+        line.setAttribute('x1', parseInt(a.getAttribute('x')) + parseInt(a.getAttribute('width'))/2);
+        line.setAttribute('x2', parseInt(b.getAttribute('x')) + parseInt(b.getAttribute('width'))/2);
+        line.setAttribute('y1', parseInt(a.getAttribute('y')) + parseInt(a.getAttribute('height'))/2);
+        line.setAttribute('y2', parseInt(b.getAttribute('y')) + parseInt(b.getAttribute('height'))/2);
+    }
+
     function select() {
         $('#'+elementId).attr('cursor', 'move');
     }
 
     function choose(id) {
-        console.log($('#svg-g-'+id).html());
         if(mood === 'select') {
             currentGroup = id;
         } else if(mood === 'join') {
@@ -96,13 +113,24 @@ function Diagram(elementId, templateId) {
             children[i].setAttribute('x', parseInt(children[i].getAttribute('x'))+dx);
             children[i].setAttribute('y', parseInt(children[i].getAttribute('y'))+dy);
         }
+        moveAllJoinings(id);
+    }
+
+    function moveAllJoinings(id) {
+        if(typeof(joinings[id]) === 'undefined') return;
+        var keys = Object.keys(joinings[id]);
+        for(var i in keys) updateLine(id, keys[i]);
     }
 
     function join(a, b) {
-        if(a !== b) joinings.add(toPair(a, b));
-        joinings.forEach(function(i){
-            console.log(i);
-        });
+        if(a !== b) {
+            if(typeof(joinings[a]) === 'undefined') joinings[a] = {};
+            if(typeof(joinings[a][b]) === 'undefined') addLine(a, b);
+            joinings[a][b] = null;
+            if(typeof(joinings[b]) === 'undefined') joinings[b] = {};
+            joinings[b][a] = null;
+        }
+        console.log('joinings='+JSON.stringify(joinings));
         lastGroup = null;
     }
 
@@ -115,7 +143,11 @@ function Diagram(elementId, templateId) {
     }
 
     function toPair(a, b) {
-        return a<=b ? a+','+b : b+','+a;
+        return a<=b ? a+'-'+b : b+'-'+a;
+    }
+
+    function getLineId(a, b) {
+        return 'svg-line-'+toPair(a, b);
     }
 
     function refresh() {
@@ -123,12 +155,6 @@ function Diagram(elementId, templateId) {
     }
 
     function doVectorColide(a, b) {
-        console.log('a='+JSON.stringify(a));
-        console.log('b='+JSON.stringify(b));
-        console.log('a.x > b.x + b.w: '+(a.x > b.x + b.w));
-        console.log('a.y > b.y + b.h: '+(a.y > b.y + b.h));
-        console.log('a.x + a.w < b.x: '+(a.x + a.w < b.x));
-        console.log('a.y + a.h < b.y: '+(a.y + a.h < b.y));
         return !(a.x > b.x + b.w || a.y > b.y + b.h || a.x + a.w < b.x || a.y + a.h < b.y);
     }
 
@@ -137,10 +163,8 @@ function Diagram(elementId, templateId) {
     }
 
     function isCollision(id, dx, dy) {
-        console.log('id='+id);
         var elem = $('#svg-g-'+id)[0];
         for(var i=0; i<lastId+1; i++) if(i!=id) {
-            console.log('i='+i);
             var a = {
                 x: parseInt(elem.getAttribute('x')) + dx,
                 y: parseInt(elem.getAttribute('y')) + dy,
@@ -155,7 +179,6 @@ function Diagram(elementId, templateId) {
                 h: parseInt(elemHere.getAttribute('height'))
             };
             var isCollisionHere = doVectorColide(a, b);
-            console.log('isCollisionHere='+isCollisionHere);
             if(isCollisionHere) return true;
         }
         return false;
