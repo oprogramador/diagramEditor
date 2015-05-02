@@ -2,7 +2,7 @@ function Diagram(elementId, templateId) {
     this.add = add;
     this.setMood = setMood;
 
-    var lastId = 0;
+    var lastId = -1;
     var currentGroup = null;
     var lastGroup = null;
     var lastX = null;
@@ -86,8 +86,11 @@ function Diagram(elementId, templateId) {
     }
 
     function moveGroup(id, dx, dy) {
-        var children = $('#svg-g-'+lastGroup).children();
-        console.log('dx='+dx+' dy='+dy);
+        if(isCollision(id, dx, dy)) return;
+        var group = $('#svg-g-'+lastGroup);
+        group[0].setAttribute('x', parseInt(group[0].getAttribute('x'))+dx);
+        group[0].setAttribute('y', parseInt(group[0].getAttribute('y'))+dy);
+        var children = group.children();
         for(var i=0; i<children.length; i++) {
             children[i].setAttribute('x', parseInt(children[i].getAttribute('x'))+dx);
             children[i].setAttribute('y', parseInt(children[i].getAttribute('y'))+dy);
@@ -116,5 +119,40 @@ function Diagram(elementId, templateId) {
 
     function refresh() {
         $('body').html($('body').html());
+    }
+
+    function doVectorColide(a, b) {
+        console.log('a='+JSON.stringify(a));
+        console.log('b='+JSON.stringify(b));
+        console.log('a.x > b.x + b.w: '+(a.x > b.x + b.w));
+        console.log('a.y > b.y + b.h: '+(a.y > b.y + b.h));
+        console.log('a.x + a.w < b.x: '+(a.x + a.w < b.x));
+        console.log('a.y + a.h < b.y: '+(a.y + a.h < b.y));
+        return !(a.x > b.x + b.w || a.y > b.y + b.h || a.x + a.w < b.x || a.y + a.h < b.y);
+    }
+
+    function isCollision(id, dx, dy) {
+        console.log('id='+id);
+        var elem = $('#svg-g-'+id)[0];
+        for(var i=0; i<lastId+1; i++) if(i!=id) {
+            console.log('i='+i);
+            var a = {
+                x: parseInt(elem.getAttribute('x')) + dx,
+                y: parseInt(elem.getAttribute('y')) + dy,
+                w: parseInt(elem.getAttribute('width')),
+                h: parseInt(elem.getAttribute('height'))
+            };
+            var elemHere = $('#svg-g-'+i)[0];
+            var b = {
+                x: parseInt(elemHere.getAttribute('x')),
+                y: parseInt(elemHere.getAttribute('y')),
+                w: parseInt(elemHere.getAttribute('width')),
+                h: parseInt(elemHere.getAttribute('height'))
+            };
+            var isCollisionHere = doVectorColide(a, b);
+            console.log('isCollisionHere='+isCollisionHere);
+            if(isCollisionHere) return true;
+        }
+        return false;
     }
 }
