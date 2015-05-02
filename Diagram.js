@@ -1,3 +1,9 @@
+/****************************************
+ *
+ * Author: Piotr Sroczkowski
+ *
+ ****************************************/
+
 function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
     this.add = add;
     this.setMood = setMood;
