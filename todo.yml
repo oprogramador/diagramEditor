@@ -6,3 +6,4 @@ todo:
     graphical_selection: no
     style_change: no
     resize: no
+    keyboard_ui: no
