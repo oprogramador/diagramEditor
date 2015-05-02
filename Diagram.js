@@ -86,6 +86,7 @@ function Diagram(elementId, templateId) {
     }
 
     function moveGroup(id, dx, dy) {
+        if(isBoardCollision(id, dx, dy)) return;
         if(isCollision(id, dx, dy)) return;
         var group = $('#svg-g-'+lastGroup);
         group[0].setAttribute('x', parseInt(group[0].getAttribute('x'))+dx);
@@ -131,6 +132,10 @@ function Diagram(elementId, templateId) {
         return !(a.x > b.x + b.w || a.y > b.y + b.h || a.x + a.w < b.x || a.y + a.h < b.y);
     }
 
+    function isRectInside(a, b) {
+        return a.x >= b.x && a.y >= b.y && a.x + a.w <= b.x + b.w && a.y + a.h <= b.y + b.h;
+    }
+
     function isCollision(id, dx, dy) {
         console.log('id='+id);
         var elem = $('#svg-g-'+id)[0];
@@ -154,5 +159,23 @@ function Diagram(elementId, templateId) {
             if(isCollisionHere) return true;
         }
         return false;
+    }
+
+    function isBoardCollision(id, dx, dy) {
+        var elem = $('#svg-g-'+id)[0];
+        var a = {
+            x: parseInt(elem.getAttribute('x')) + dx,
+            y: parseInt(elem.getAttribute('y')) + dy,
+            w: parseInt(elem.getAttribute('width')),
+            h: parseInt(elem.getAttribute('height'))
+        };
+        elemB = $('#'+elementId)[0];
+        var b = {
+            x: 0,
+            y: 0,
+            w: parseInt(elemB.getAttribute('width')),
+            h: parseInt(elemB.getAttribute('height'))
+        };
+        return !isRectInside(a, b);
     }
 }
