@@ -7,31 +7,40 @@
 <script>
 var diagram;
 $(document).ready(function(){
-        diagram = new Diagram('diagram', 'template', 'templateLine', 'form');
+        diagram = new Diagram('diagram', 'template', 'templateLine', 'form', 'buttons');
         });
 </script>
 <link rel="stylesheet" href="main.css"/>
 </head>
 <body>
 <h1>Diagram editor</h1>
-<button onclick="diagram.add()">Add</button> 
-<button onclick="diagram.setMood('replace')">Replace</button> 
-<button onclick="diagram.setMood('join')">Join</button> 
-<button onclick="diagram.setMood('select')">Select</button> 
+<div id="buttons">
+    <button name="add">Add</button> 
+    <button name="replace">Replace</button> 
+    <button name="join">Join</button> 
+    <button name="select">Select</button> 
+</div>
 <div id="form">
     <label for="input-text">Text</label>
     <input id="input-text"/ name="text" value="Hello">
+    <label for="input-shape">Shape</label>
+    <select id="input-shape" name="shape">
+        <option value="rect">Rectangle</option>
+        <option value="ellipse">Ellipse</option>
+    </select>
 </div>
 <div width="100%" height="100%" style="overflow:scroll">
     <svg id="diagram" width="800" height="600">
     </svg>
 </div>
 <div style="display:none">
-    <g id="template" x="0" y="0" width="200" height="100">
-    <rect x="0" y="0" width="200" height="100" style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)"></rect>
-    <text x="100" y="50" width="200" height="100" fill="white" text-anchor="middle" alignment-baseline="middle">Hello</text>
+    <g id="template" x="0" y="0" width="200" height="100" render-order="0">
+        <rect x="0" y="0" width="200" height="100" style="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)"></rect>
+        <text x="100" y="50" width="200" height="100" fill="white" text-anchor="middle" alignment-baseline="middle">Hello</text>
     </g>
-    <line id="templateLine" x1="0" y1="0" x2="200" y2="200" style="stroke:rgb(128,128,0);stroke-width:2" />
+    <g id="templateLine" render-order="-1">
+        <line x1="0" y1="0" x2="200" y2="200" style="stroke:rgb(128,128,0);stroke-width:2" />
+    </g>
 </div>
 </body>
 </html>

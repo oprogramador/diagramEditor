@@ -1,4 +1,4 @@
-function Diagram(elementId, templateId, templateLineId, formId) {
+function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
     this.add = add;
     this.setMood = setMood;
 
@@ -9,6 +9,8 @@ function Diagram(elementId, templateId, templateLineId, formId) {
     var lastY = null;
     var mood = 'replace';
     var joinings = {};
+
+    selectButton($('#'+buttonsId+' [name=replace]')[0]);
 
     $(document.body).on('click', '[id^=svg-g-]', function(e) {
         var id = this.id.split('-')[2];
@@ -37,6 +39,38 @@ function Diagram(elementId, templateId, templateLineId, formId) {
         if(currentGroup !== null) $('#svg-g-'+currentGroup+' text').html(this.value);
     });
 
+    $(document.body).on('change', '#'+formId+' [name=shape]', function(e) {
+        if(currentGroup !== null);
+    });
+
+    $(document.body).on('click', '#'+buttonsId+' [name=add]', function(e) {
+        add();
+    });
+
+    $(document.body).on('click', '#'+buttonsId+' [name=replace]', function(e) {
+        setMood('replace');
+        selectButton(this);
+    });
+
+    $(document.body).on('click', '#'+buttonsId+' [name=join]', function(e) {
+        setMood('join');
+        selectButton(this);
+    });
+
+    $(document.body).on('click', '#'+buttonsId+' [name=select]', function(e) {
+        setMood('select');
+        selectButton(this);
+    });
+
+    function switchButtonsOff() {
+        $('#'+buttonsId+' button').css('background-color', 'white');
+    }
+
+    function selectButton(button) {
+        switchButtonsOff();
+        $(button).css('background-color', 'red');
+    }
+
     function add() {
         var template = $('#'+templateId)[0];
         var element = $('#'+elementId)[0];
@@ -45,20 +79,25 @@ function Diagram(elementId, templateId, templateLineId, formId) {
         lastId++;
         el.id = 'svg-g-'+lastId;
         element.appendChild(el);
+        if(isCollision(lastId, 0, 0)) {
+            alert('To add a new field, release the space in the left-top corner');
+            element.removeChild(el);
+            lastId--;
+        }
         refresh();
     }
 
     function addLine(a, b) {
         var line = $('#'+templateLineId).clone();
         line.attr('id', getLineId(a, b));
-        $('#'+elementId).append(line);
+        $('#'+elementId).prepend(line);
         updateLine(a, b);
         refresh();
     }
 
     function updateLine(a, b) {
         console.log('lineId='+getLineId(a, b));
-        var line = $('#'+getLineId(a, b))[0];
+        var line = $('#'+getLineId(a, b)+' line')[0];
         a = $('#svg-g-'+a)[0];
         b = $('#svg-g-'+b)[0];
         line.setAttribute('x1', parseInt(a.getAttribute('x')) + parseInt(a.getAttribute('width'))/2);
