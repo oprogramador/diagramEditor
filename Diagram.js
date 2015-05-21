@@ -68,6 +68,11 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         selectButton(this);
     });
 
+    $(document.body).on('click', '#'+buttonsId+' [name=remove]', function(e) {
+        setMood('remove');
+        selectButton(this);
+    });
+
     function switchButtonsOff() {
         $('#'+buttonsId+' button').removeClass('selected_btn');
     }
@@ -131,6 +136,10 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         $('#svg-g-'+id+' [istrueshape=true]').css('stroke-width', 8);
     }
 
+    function removeGroup(id) {
+        $('#svg-g-'+id).remove();
+    }
+
     function choose(id) {
         if(mood === 'select') {
             currentGroup = id;
@@ -144,6 +153,8 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
                 switchOffGraphically();
                 join(lastGroup, id);
             }
+        } else if(mood === 'remove') {
+            removeGroup(id);
         }
     }
 
@@ -196,13 +207,26 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         for(var i in keys) updateLine(id, keys[i]);
     }
 
+    function removeLine(a, b) {
+        $('#'+getLineId(a, b)).remove();
+    }
+
+    function removeJoining(a, b) {
+        delete joinings[a][b];
+        delete joinings[b][a];
+        removeLine(a, b);
+        console.log('joinings='+JSON.stringify(joinings));
+    }
+
     function join(a, b) {
         if(a !== b) {
             if(typeof(joinings[a]) === 'undefined') joinings[a] = {};
-            if(typeof(joinings[a][b]) === 'undefined') addLine(a, b);
-            joinings[a][b] = null;
-            if(typeof(joinings[b]) === 'undefined') joinings[b] = {};
-            joinings[b][a] = null;
+            if(typeof(joinings[a][b]) === 'undefined') {
+                addLine(a, b);
+                joinings[a][b] = null;
+                if(typeof(joinings[b]) === 'undefined') joinings[b] = {};
+                joinings[b][a] = null;
+            } else removeJoining(a, b);
         }
         console.log('joinings='+JSON.stringify(joinings));
         lastGroup = null;
@@ -238,14 +262,16 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
 
     function isCollision(id, dx, dy) {
         var elem = $('#svg-g-'+id)[0];
-        for(var i=0; i<lastId+1; i++) if(i!=id) {
+        var children = $('[id^=svg-g-]');
+        for(var i=0; i<children.length; i++) {
+            var elemHere = children[i];
+            if(elem.id === elemHere.id) continue;
             var a = {
                 x: parseInt(elem.getAttribute('x')) + dx,
                 y: parseInt(elem.getAttribute('y')) + dy,
                 w: parseInt(elem.getAttribute('width')),
                 h: parseInt(elem.getAttribute('height'))
             };
-            var elemHere = $('#svg-g-'+i)[0];
             var b = {
                 x: parseInt(elemHere.getAttribute('x')),
                 y: parseInt(elemHere.getAttribute('y')),

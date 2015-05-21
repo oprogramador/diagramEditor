@@ -3,7 +3,7 @@ todo:
     read_from_file: no
     style: yes
     hor_ver_lines: no
-    shape_change: no
+    shape_change: yes
     graphical_selection: yes
     style_change: no
     resize: no
