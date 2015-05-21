@@ -74,6 +74,7 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
 
     function selectButton(button) {
         switchButtonsOff();
+        switchOffGraphically();
         $(button).addClass('selected_btn');
     }
 
@@ -116,12 +117,28 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         $('#'+elementId).attr('cursor', 'move');
     }
 
+    function switchOffGraphically() {
+        $('[id^=svg-g-] rect').css('stroke-width', 3);
+    }
+
+    function chooseGraphically(id) {
+        switchOffGraphically();
+        $('#svg-g-'+id+' rect').css('stroke-width', 8);
+    }
+
     function choose(id) {
         if(mood === 'select') {
             currentGroup = id;
+            chooseGraphically(id);
         } else if(mood === 'join') {
-            if(lastGroup === null) lastGroup = id;
-            else join(lastGroup, id);
+            if(lastGroup === null) {
+                chooseGraphically(id);
+                lastGroup = id;
+            }
+            else {
+                switchOffGraphically();
+                join(lastGroup, id);
+            }
         }
     }
 
