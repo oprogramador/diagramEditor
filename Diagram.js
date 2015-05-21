@@ -69,12 +69,12 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
     });
 
     function switchButtonsOff() {
-        $('#'+buttonsId+' button').css('background-color', 'white');
+        $('#'+buttonsId+' button').removeClass('selected_btn');
     }
 
     function selectButton(button) {
         switchButtonsOff();
-        $(button).css('background-color', 'red');
+        $(button).addClass('selected_btn');
     }
 
     function add() {
