@@ -1,9 +1,15 @@
 todo:
     save_to_file: no
-    style: no
+    read_from_file: no
+    style: yes
     hor_ver_lines: no
     shape_change: no
-    graphical_selection: no
+    graphical_selection: yes
     style_change: no
     resize: no
     keyboard_ui: no
+    mobile_test: no
+    groupe_select: no
+    remove_join: no
+    remove_element: no
+    clear: no

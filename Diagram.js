@@ -46,7 +46,7 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
     });
 
     $(document.body).on('change', '#'+formId+' [name=shape]', function(e) {
-        if(currentGroup !== null);
+        if(currentGroup !== null) changeShape(currentGroup, this.value);
     });
 
     $(document.body).on('click', '#'+buttonsId+' [name=add]', function(e) {
@@ -70,6 +70,11 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
 
     function switchButtonsOff() {
         $('#'+buttonsId+' button').removeClass('selected_btn');
+    }
+
+    function changeShape(id, shape) {
+        $('#svg-g-'+id+' [istrueshape=true]').css('display', 'none');
+        $('#svg-g-'+id+' '+shape).css('display', 'block');
     }
 
     function selectButton(button) {
@@ -118,12 +123,12 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
     }
 
     function switchOffGraphically() {
-        $('[id^=svg-g-] rect').css('stroke-width', 3);
+        $('[id^=svg-g-] [istrueshape=true]').css('stroke-width', 3);
     }
 
     function chooseGraphically(id) {
         switchOffGraphically();
-        $('#svg-g-'+id+' rect').css('stroke-width', 8);
+        $('#svg-g-'+id+' [istrueshape=true]').css('stroke-width', 8);
     }
 
     function choose(id) {
@@ -177,8 +182,10 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         group[0].setAttribute('y', parseInt(group[0].getAttribute('y'))+dy);
         var children = group.children();
         for(var i=0; i<children.length; i++) {
-            children[i].setAttribute('x', parseInt(children[i].getAttribute('x'))+dx);
-            children[i].setAttribute('y', parseInt(children[i].getAttribute('y'))+dy);
+            var attrNames = {x: 'x', y: 'y'};
+            if(['ellipse'].indexOf(children[i].nodeName) >= 0) attrNames = {x: 'cx', y: 'cy'}; 
+            children[i].setAttribute(attrNames.x, parseInt(children[i].getAttribute(attrNames.x))+dx);
+            children[i].setAttribute(attrNames.y, parseInt(children[i].getAttribute(attrNames.y))+dy);
         }
         moveAllJoinings(id);
     }
