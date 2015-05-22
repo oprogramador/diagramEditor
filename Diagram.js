@@ -41,9 +41,13 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
     });
 
     $(document.body).on('keyup', '#'+formId+' [name=text]', function(e) {
-        console.log('currentGroup='+currentGroup);
         if(currentGroup !== null) $('#svg-g-'+currentGroup+' text').html(this.value);
     });
+
+    $(document.body).on('keyup', '#'+formId+' [name=background]', function(e) {
+        if(currentGroup !== null) $('#svg-g-'+currentGroup+' [istrueshape=true]').css('fill', this.value);
+    });
+
 
     $(document.body).on('change', '#'+formId+' [name=shape]', function(e) {
         if(currentGroup !== null) changeShape(currentGroup, this.value);
@@ -51,6 +55,10 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
 
     $(document.body).on('click', '#'+buttonsId+' [name=add]', function(e) {
         add();
+    });
+
+    $(document.body).on('click', '#'+buttonsId+' [name=clear]', function(e) {
+        clear();
     });
 
     $(document.body).on('click', '#'+buttonsId+' [name=replace]', function(e) {
@@ -80,12 +88,18 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
     function changeShape(id, shape) {
         $('#svg-g-'+id+' [istrueshape=true]').css('display', 'none');
         $('#svg-g-'+id+' '+shape).css('display', 'block');
+        $('#svg-g-'+id).attr('shape', shape);
     }
 
     function selectButton(button) {
         switchButtonsOff();
         switchOffGraphically();
         $(button).addClass('selected_btn');
+    }
+
+    function clear() {
+        $('[id^=svg-]').remove();
+        joinings = {};
     }
 
     function add() {
@@ -102,6 +116,7 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
             lastId--;
         }
         refresh();
+        $('#svg-g-'+lastId).attr('shape', 'rect');
     }
 
     function addLine(a, b) {
@@ -150,9 +165,17 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         }
     }
 
+    function updateForm(id) {
+        var form = $('#'+formId);
+        form.find('[name=text]').val($('#svg-g-'+id+' text').html());
+        form.find('[name=shape]').val($('#svg-g-'+id).attr('shape'));
+        form.find('[name=background]').val($('#svg-g-'+id+' [istrueshape=true]').css('fill'));
+    }
+
     function choose(id) {
         if(mood === 'select') {
             currentGroup = id;
+            updateForm(id);
             chooseGraphically(id);
         } else if(mood === 'join') {
             if(lastGroup === null) {

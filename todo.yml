@@ -10,6 +10,6 @@ todo:
     keyboard_ui: no
     mobile_test: no
     groupe_select: no
-    remove_join: no
-    remove_element: no
+    remove_join: yes
+    remove_element: yes
     clear: no
