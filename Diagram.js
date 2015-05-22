@@ -40,7 +40,7 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         return false;
     });
 
-    $(document.body).on('keydown', '#'+formId+' [name=text]', function(e) {
+    $(document.body).on('keyup', '#'+formId+' [name=text]', function(e) {
         console.log('currentGroup='+currentGroup);
         if(currentGroup !== null) $('#svg-g-'+currentGroup+' text').html(this.value);
     });
@@ -136,8 +136,18 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         $('#svg-g-'+id+' [istrueshape=true]').css('stroke-width', 8);
     }
 
+    function removeLine(a, b) {
+        $('#'+getLineId(a, b)).remove();
+    }
+
     function removeGroup(id) {
         $('#svg-g-'+id).remove();
+        delete joinings[id];
+        var keys = Object.keys(joinings);
+        for(var i in keys) {
+            delete joinings[keys[i]][id];
+            removeLine(id, keys[i]);
+        }
     }
 
     function choose(id) {
