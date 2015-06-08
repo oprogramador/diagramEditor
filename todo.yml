@@ -8,8 +8,8 @@ todo:
     style_change: no
     resize: no
     keyboard_ui: no
-    mobile_test: no
+    mobile_test: yes
     groupe_select: no
     remove_join: yes
     remove_element: yes
-    clear: no
+    clear: yes

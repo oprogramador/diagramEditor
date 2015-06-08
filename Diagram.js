@@ -97,8 +97,45 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         tryMove(0, 5);
     });
 
+    $(document.body).on('click', '#'+formId+' [name=plus]', function(e) {
+        tryResize(Math.pow(2, 0.25));
+    });
+
+    $(document.body).on('click', '#'+formId+' [name=minus]', function(e) {
+        tryResize(Math.pow(2, -0.25));
+    });
+
+    function tryResize(k) {
+        if(mood === 'select' && currentGroup !== null) resize(currentGroup, k);
+    }
+
+    function resizeElement(element, k) {
+        if(element.nodeName === 'ellipse') {
+            element.setAttribute('rx', parseFloat(element.getAttribute('rx'))*k);
+            element.setAttribute('ry', parseFloat(element.getAttribute('ry'))*k);
+        }
+        if(['g', 'rect', 'text'].indexOf(element.nodeName) >= 0) {
+            element.setAttribute('width', parseFloat(element.getAttribute('width'))*k);
+            element.setAttribute('height', parseFloat(element.getAttribute('height'))*k);
+        }
+        if(['g', 'rect'].indexOf(element.nodeName) >= 0) {
+            var dx = parseFloat(element.getAttribute('width'))*(1-k)/2;
+            var dy = parseFloat(element.getAttribute('height'))*(1-k)/2;
+            element.setAttribute('x', parseFloat(element.getAttribute('x'))+dx);
+            element.setAttribute('y', parseFloat(element.getAttribute('y'))+dy);
+        }
+    }
+
+    function resize(id, k) {
+        var group = $('#svg-g-'+id);
+        var children = group.children();
+        resizeElement(group[0], k);
+        for(var i=0; i<children.length; i++) {
+            resizeElement(children[i], k);
+        }
+    }
+
     function tryMove(x, y) {
-        console.log('currentGroup='+currentGroup);
         if(mood === 'select' && currentGroup !== null) moveGroup(currentGroup, x, y);
     }
 
