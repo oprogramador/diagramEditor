@@ -81,6 +81,27 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         selectButton(this);
     });
 
+    $(document.body).on('click', '#'+formId+' [name=left]', function(e) {
+        tryMove(-5, 0);
+    });
+
+    $(document.body).on('click', '#'+formId+' [name=right]', function(e) {
+        tryMove(5, 0);
+    });
+
+    $(document.body).on('click', '#'+formId+' [name=up]', function(e) {
+        tryMove(0, -5);
+    });
+
+    $(document.body).on('click', '#'+formId+' [name=down]', function(e) {
+        tryMove(0, 5);
+    });
+
+    function tryMove(x, y) {
+        console.log('currentGroup='+currentGroup);
+        if(mood === 'select' && currentGroup !== null) moveGroup(currentGroup, x, y);
+    }
+
     function switchButtonsOff() {
         $('#'+buttonsId+' button').removeClass('selected_btn');
     }
@@ -221,7 +242,7 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
     function moveGroup(id, dx, dy) {
         if(isBoardCollision(id, dx, dy)) return;
         if(isCollision(id, dx, dy)) return;
-        var group = $('#svg-g-'+lastGroup);
+        var group = $('#svg-g-'+id);
         group[0].setAttribute('x', parseInt(group[0].getAttribute('x'))+dx);
         group[0].setAttribute('y', parseInt(group[0].getAttribute('y'))+dy);
         var children = group.children();

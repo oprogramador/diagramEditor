@@ -35,6 +35,24 @@ $(document).ready(function(){
         <option value="rect">Rectangle</option>
         <option value="ellipse">Ellipse</option>
     </select>
+    <table>
+        <tr>
+            <td width="33.3333333333333%" height="100%" rowspan="2">
+                <button class="arrow btn" name="left">Left</button>
+            </td>
+            <td width="33.3333333333333%">
+                <button class="arrow btn" name="up">Up</button>
+            </td>
+            <td width="33.3333333333333%" rowspan="2">
+                <button class="arrow btn" name="right">Right</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="arrow btn" name="down">Down</button>
+            </td>
+        </tr>
+    </table>
 </div>
 <svg id="diagram" width="800" height="600">
 </svg>
