@@ -5,13 +5,16 @@
 <head>
 <meta charset="utf-8"/>
 <script src="jquery-1.11.1.min.js"></script>
+<script src="jscolor.js"></script>
+<script src="canvg.js"></script>
+<script src="bootstrap-formhelpers-colorpicker.js"></script>
 <script src="Diagram.js"></script>
 <script src="main.js"></script>
 <script>
 var diagram;
 $(document).ready(function(){
-        diagram = new Diagram('diagram', 'template', 'templateLine', 'form', 'buttons');
-        });
+    diagram = new Diagram('diagram', 'template', 'templateLine', 'form', 'buttons');
+    });
 </script>
 <link rel="stylesheet" href="main.css"/>
 </head>
@@ -29,7 +32,7 @@ $(document).ready(function(){
     <label for="input-text">Text</label>
     <input id="input-text"/ name="text" value="Hello" />
     <label for="input-background">Background</label>
-    <input id="input-background" name="background" value="blue" />
+    <input id="input-background" name="background" type="color" value="blue" />
     <label for="input-shape">Shape</label>
     <select id="input-shape" name="shape">
         <option value="rect">Rectangle</option>

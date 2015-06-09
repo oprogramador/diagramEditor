@@ -44,7 +44,7 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         if(currentGroup !== null) $('#svg-g-'+currentGroup+' text').html(this.value);
     });
 
-    $(document.body).on('keyup', '#'+formId+' [name=background]', function(e) {
+    $(document.body).on('change', '#'+formId+' [name=background]', function(e) {
         if(currentGroup !== null) $('#svg-g-'+currentGroup+' [istrueshape=true]').css('fill', this.value);
     });
 
