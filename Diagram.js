@@ -61,6 +61,10 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
         clear();
     });
 
+    $(document.body).on('click', '#'+buttonsId+' [name=export]', function(e) {
+        exportGraphics();
+    });
+
     $(document.body).on('click', '#'+buttonsId+' [name=replace]', function(e) {
         setMood('replace');
         selectButton(this);
@@ -107,6 +111,13 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
 
     function tryResize(k) {
         if(mood === 'select' && currentGroup !== null) resize(currentGroup, k);
+    }
+
+    function exportGraphics() {
+        var xml = new XMLSerializer().serializeToString($('#'+elementId)[0]);
+        var data = 'data:image/svg+xml;base64,'+btoa(xml);
+        var name = 'Image'+Math.random()+'.png';
+        $('#'+elementId).after('<a href="'+data+'" download="'+name+'">'+name+'</a>');
     }
 
     function resizeElement(element, k) {

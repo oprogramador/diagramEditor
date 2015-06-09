@@ -13,3 +13,5 @@ todo:
     remove_join: yes
     remove_element: yes
     clear: yes
+    plus_minus_check_in_board: no
+    foreground_color_change: no
