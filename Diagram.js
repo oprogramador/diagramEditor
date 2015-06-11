@@ -116,8 +116,8 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
     function exportGraphics() {
         var xml = new XMLSerializer().serializeToString($('#'+elementId)[0]);
         var data = 'data:image/svg+xml;base64,'+btoa(xml);
-        var name = 'Image'+Math.random()+'.png';
-        $('#'+elementId).after('<a href="'+data+'" download="'+name+'">'+name+'</a>');
+        var name = 'Image'+Date.now()+'.png';
+        $('#'+elementId).after('<div><a href="'+data+'" download="'+name+'">'+name+'</a></div>');
     }
 
     function resizeElement(element, k) {
