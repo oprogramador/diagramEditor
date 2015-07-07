@@ -18,6 +18,41 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
 
     selectButton($('#'+buttonsId+' [name=replace]')[0]);
 
+    function serialize() {
+        var data = {
+            lastId: lastId,
+            currentGroup: currentGroup,
+            lastGroup: lastGroup,
+            lastX: lastX,
+            lastY: lastY,
+            mood: mood,
+            joinings: joinings,
+            html: document.body.innerHTML,
+        };
+        return JSON.stringify(data);
+    }
+
+    function unserialize(data) {
+        debugger;
+        data = JSON.parse(data);
+        document.body.innerHTML = data.html;
+        lastId = data.lastId;
+        currentGroup = data.currentGroup;
+        lastGroup = data.lastGroup;
+        lastX = data.lastX;
+        lastY = data.lastY;
+        mood = data.mood;
+        joinings = data.joinings;
+    }
+
+    document.body.onchange = function(value) {
+        value = JSON.parse(value);
+        //$('#svgSerialization').remove();
+        //$('body').append('<div id="svgSerialization" style="display:none">'+s+'</div>');
+        if(value.msg === 'serialize') return serialize();
+        if(value.msg === 'unserialize') return unserialize(value.data);
+    }
+
     $(document.body).on('click', '[id^=svg-g-]', function(e) {
         var id = this.id.split('-')[2];
         choose(id);
@@ -86,19 +121,19 @@ function Diagram(elementId, templateId, templateLineId, formId, buttonsId) {
     });
 
     $(document.body).on('click', '#'+formId+' [name=left]', function(e) {
-        tryMove(-5, 0);
+        tryMove(-50, 0);
     });
 
     $(document.body).on('click', '#'+formId+' [name=right]', function(e) {
-        tryMove(5, 0);
+        tryMove(50, 0);
     });
 
     $(document.body).on('click', '#'+formId+' [name=up]', function(e) {
-        tryMove(0, -5);
+        tryMove(0, -50);
     });
 
     $(document.body).on('click', '#'+formId+' [name=down]', function(e) {
-        tryMove(0, 5);
+        tryMove(0, 50);
     });
 
     $(document.body).on('click', '#'+formId+' [name=plus]', function(e) {
